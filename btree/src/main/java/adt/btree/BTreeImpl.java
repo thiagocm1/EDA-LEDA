@@ -24,9 +24,14 @@ public class BTreeImpl<T extends Comparable<T>> implements BTree<T> {
 
    @Override
    public int height() {
-      if (!root.isEmpty())
-         return height(this.root);
-      return -1;
+	   int result;
+	   if(getRoot().isEmpty()){
+		   result = -1;
+	   }
+	   else{
+         result = height(this.root);
+	   }
+      return result;
    }
 
    private int height(BNode<T> node) {
@@ -78,36 +83,40 @@ public class BTreeImpl<T extends Comparable<T>> implements BTree<T> {
 
    @Override
    public BNodePosition<T> search(T element) {
-      if (!root.isEmpty())
-         return search(root, element);
-      else
-         return new BNodePosition<>();
+      BNodePosition<T> result;
+      if(getRoot().isEmpty()){
+    	  result = new BNodePosition<T>();
+      }
+      else{
+    	  result = search(getRoot(), element);
+      }
+        return result;
    }
 
    private BNodePosition<T> search(BNode<T> node, T element) {
-      BNodePosition<T> out = new BNodePosition<>();
+      BNodePosition<T> result = new BNodePosition<>();
       int indexOf = node.getElements().indexOf(element);
       if (indexOf != -1) {
-         out = new BNodePosition<>(node, indexOf);
+         result = new BNodePosition<>(node, indexOf);
       } else {
          if (!node.isLeaf()) {
             for (BNode<T> no : node.getChildren()) {
                BNodePosition<T> aux = search(no, element);
                if (aux.node != null) {
-                  out = aux;
+                  result = aux;
                   break;
                }
             }
          }
       }
-      return out;
+      return result;
    }
 
    @Override
    public void insert(T element) {
-      //se o element n for null e não estiver na arvore
+    
       if (element != null && this.search(element).node == null)
-         insert(this.root, element);
+         insert(this.getRoot(), element);
 
    }
 
