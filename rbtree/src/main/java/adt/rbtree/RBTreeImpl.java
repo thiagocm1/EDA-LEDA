@@ -267,6 +267,45 @@ public class RBTreeImpl<T extends Comparable<T>> extends BSTImpl<T> implements R
 		 result = result + countBlackNodes((RBNode<T>) node.getLeft()) + countBlackNodes((RBNode<T>) node.getRight());
 	   }
 	   return result;
-	
    }
+	 public RBNode[] blackNodes(){
+	   int countBlackNode = countBlackNodes();
+	   RBNode[] array = new RBNode[countBlackNode];
+	   int index = 0;
+	   blackNodes(array, (RBNode<T>) getRoot(), index);
+	   return array;
+   }
+
+   private int blackNodes(RBNode[] array, RBNode<T> node, int index) {
+	   if(!node.isEmpty()){
+		   if(node.getColour().equals(getColourBlack())){
+			   array[index++] = node;
+		   }
+		   index = blackNodes(array, (RBNode<T>) node.getLeft(), index);
+		   index = blackNodes(array, (RBNode<T>) node.getRight(), index);
+		
+	   }
+	   return index;
+   }
+   
+   public RBNode[] redNodes(){
+	   int countRedNode = countRedNodes();
+	   RBNode[] array = new RBNode[countRedNode];
+	   int index = 0;
+	   redNodes(array, (RBNode<T>)getRoot(), index);
+	   return array;
+   }
+
+   private int redNodes(RBNode[] array, RBNode<T> node, int index) {
+	   if(!node.isEmpty()){
+		   if(node.getColour().equals(getColourRed())){
+			   array[index++] = node;
+		   }
+		   index = redNodes(array, (RBNode<T>) node.getLeft(), index);
+		   index = redNodes(array, (RBNode<T>) node.getRight(), index);
+	   }
+	   return index;
+   }
+   
+	
 }
