@@ -228,4 +228,63 @@ public class RBTreeImpl<T extends Comparable<T>> extends BSTImpl<T> implements R
          this.root = newNode;
       }
    }
+   
+   public int countRedNodes(){
+	   return countRedNodes((RBNode<T>)getRoot());
+   }
+   
+   private int countRedNodes(RBNode<T> node) {
+	
+	   int result = 0;
+	  if(node.isEmpty()){
+		  result = 0;
+	  }
+	 
+	  else if(node.getColour().equals(getColourRed())){
+		  result = 1 + Math.max(countRedNodes((RBNode<T>) node.getLeft()), countRedNodes((RBNode<T>) node.getRight()));
+	  }
+	  else{
+		  result = countRedNodes((RBNode<T>) node.getLeft()) + countRedNodes((RBNode<T>) node.getRight());
+	  }
+	  return result;
+	  
+   }
+   
+   public int countBlackNodes(){
+	   return countBlackNodes((RBNode<T>) getRoot());
+   }
+   
+   
+   private int countBlackNodes(RBNode<T> node) {
+
+	 int result = 0;
+	 if(node.isEmpty()){
+		 result = 0;
+	 }
+	 else if(node.getColour().equals(getColourRed())){
+		 result =  Math.max(countBlackNodes((RBNode<T>) node.getLeft()), countBlackNodes((RBNode<T>) node.getRight()));
+	 }
+	 else if(node.getColour().equals(getColourBlack())){
+		 result =  2 +  Math.max(countBlackNodes((RBNode<T>) node.getLeft()), countBlackNodes((RBNode<T>) node.getRight()));
+	
+	 }
+	 return result;
+	 
+	
+	   /* int result = 0;
+	   if(node.isEmpty() || node.equals(getRoot())){
+		   result = 0;
+	   }
+	   else if(node.getColour().equals(getColourBlack())){
+		   result +=  1 + Math.max(countBlackNodes((RBNode<T>) node.getLeft()), countBlackNodes((RBNode<T>) node.getRight()));
+	   }
+	   else {
+		   result = countBlackNodes((RBNode<T>) node.getLeft()) + countBlackNodes((RBNode<T>) node.getRight());
+	   }
+	 
+	   
+	   return result + 1;
+	   */
+	
+   }
 }
