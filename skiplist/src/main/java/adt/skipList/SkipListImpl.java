@@ -152,99 +152,50 @@ public class SkipListImpl<T> implements SkipList<T> {
 		return array;
 	}
 	
-		@SuppressWarnings("unchecked")
-	public SkipListNode<T>[] nodesPerLevel(int height){
+		public SkipListNode<T>[] nodesPerLevel(int height){
+		if(height <= 0){
+			return new SkipListNode[0];
+		}
+		int count = 0;
 		SkipListNode<T> node = this.root;
 		
-		int index;
-		for(index = height   ; index >= 0 && (node.getForward(index) == null|| node.forward[index].getKey() < NIL.getKey()); index--){
-			;
-		}
-		SkipListNode[] array = new SkipListNode[size()];
-		
-		nodesPerlevel(node, array, index);
-		return array;
-		
-	}
-	
-	private int nodesPerlevel(SkipListNode<T> node, SkipListNode<T>[] array, int index) {
-		if(node.getForward(index) != null){
-			index = nodesPerlevel(node.getForward()[index],array, index);
-			array[index++] = node;
-		}
-		return index;
-	}
-		/*
-		int index;
-		int count = 0;
-		for ( index = maxHeight - height ; index > 0 ; index--) {
+		for (int i = height - 1; i >= 0; i--) {
+			node = node.getForward(i);
 			count ++;
 		}
 		SkipListNode[] array = new SkipListNode[count];
-		root = root.forward[maxHeight - height];
-		nodesPerlevel(root, array, index);
+		
+		//ArrayList<SkipListNode<T>> array = new ArrayList<SkipListNode<T>>();
+		nodesPerLevel(this.root, height - 1, array, 0);
 		return array;
 	}
-	
-		private int nodesPerlevel(SkipListNode<T> node, SkipListNode<T>[] array, int index) {
-			if(node.getForward(index) != null){
-				index = nodesPerlevel(node.getForward(index),array, index);
-				array[index++] = node;
-			
-			}
-			return index;
-		}
-		
-	*/
 	
 
-		/*
-		SkipListNode<T> auxNode = this.root;
-		SkipListNode[] array;
-		int count= 0;
-		for (int i = height -1 ; i > 0 ; i--) {
-			if(auxNode.getForward(i) != null){
-				auxNode = auxNode.getForward(i);
-				count ++;
-				
-			}
+	private void nodesPerLevel(SkipListNode<T> node, int height, SkipListNode[] array, int index) {
+		if(node.forward.length - 1 == height && node.getValue() != null){
+			array[index++] = node;
 		}
 		
-		array = new SkipListNode[this.size()];
-		nodesPerlevel(auxNode, array, 0);
-		return array;
-	
-	}
-	private int nodesPerlevel(SkipListNode<T> node, SkipListNode<T>[] array, int index) {
-		if(node.getForward(index) != null){
-			index = nodesPerlevel(node.getForward()[index], array, index);
-			array[index] = node;
-			index++;
+		if(node.getForward(height).getValue() == null){
+			return;
 		}
-		return index;
-	}
-	
-	*/
-	
+		
+		nodesPerLevel(node.getForward(height), height, array, index);
+	}		
 
-	/** maybe right
-	public SkipListNode<T>[] nodesLevel(int height){
-		SkipListNode<T> auxNode = this.root;
-		SkipListNode<T>[] array;
-		int count = 0;
-		for (int i = maxHeight - 1; i >= 0; i--) {
-			while(auxNode.getForward(i) != null){
-				auxNode = auxNode.getForward(i);
-				count++;
+	public boolean greatPeformace(int height, int countNodes) {
+		boolean verify = false;
+
+		if (height >= 0) {
+			verify = (nodesPerLevel(height).length == countNodes);
+			if (verify) {
+				greatPeformace(--height, 2 * countNodes);
+
+			}else{
+				return false;
 			}
 		}
-		array = new SkipListNode[count];
 		
-		for (int i = 0; i < array.length; i++) {
-			array[i] = auxNode;
-			auxNode = auxNode.forward[i];
-		}
-		return array;
+		return verify;
 	}
-	*/
 }
