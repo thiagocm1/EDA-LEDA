@@ -43,6 +43,7 @@ public class StudentMaxHeapTest {
 		heap.insert(8);
 		heap.insert(-5);
 		heap.insert(14);
+		
 		heap.insert(3);
 		heap.insert(-10);
 		heap.insert(0);
@@ -110,6 +111,21 @@ public class StudentMaxHeapTest {
 		}
 
 		assertTrue(isHeap);
+	}
+	
+	@Test
+	public void testMerge(){
+		Integer[] arrayA = new Integer[]{2,4,5,6,8,9,10};
+		Integer[] arrayB = new Integer[]{1,2,3,4,5,6};
+		Comparable<Integer>[] result =  ((HeapImpl<Integer>) heap).merge(arrayA, arrayB);
+
+		
+		for (int i = 0; i < result.length; i++) {
+			System.out.println(result[i]);
+		}
+		Comparable<Integer>[] expected = new Integer[]{10,9,8,6,6,5,5,4,4,3,2,2,1};
+		assertEquals(expected, result);
+		
 	}
 
 }

@@ -26,7 +26,7 @@ public class HeapImpl<T extends Comparable<T>> implements Heap<T> {
 	 */
 	protected Comparator<T> comparator;
 
-	private static final int INITIAL_SIZE = 20;
+	protected static final int INITIAL_SIZE = 20;
 	private static final int INCREASING_FACTOR = 10;
 
 	/**
@@ -82,23 +82,47 @@ public class HeapImpl<T extends Comparable<T>> implements Heap<T> {
 	 * (comparados usando o comparator) elementos na parte de cima da heap.
 	 */
 	private void heapify(int position) {
-		if(position < 0 || position >= index){return;}
+		if(position < 0 || position >= size()){return;}
+		int left = left(position);
+		int right = right(position);
 		int current = position;
-		if(left(position) <= index 	&& getComparator().compare(heap[left(position)], heap[current]) > 0){ /*Se os filhos da esquerda sao maiores 
-		que a posicao atual*/
-			current = left(position);
+		if(left <= index && getComparator().compare(heap[left], heap[current]) > 0){
+			current = left;
 		}
-		if(right(position) <= index && getComparator().compare(heap[right(position)], heap[current]) > 0){
-			/*
-			 * Se os filhos da diretia sao maiores q a posicao atual;*/
-			current = right(position);
+		if(right < index && getComparator().compare(heap[right], heap[current]) > 0){
+			current = right;
 		}
-		/*Vai sobindo o elemento*/
 		if(current != position){
 			Util.swap(getHeap(), current, position);
 			heapify(current);
 		}
 	}
+	
+	private void shiftUp(int position){
+		if(position < 0 || position >= size()){
+			return;
+		}
+		int parent = (int) heap[parent(position)];
+		int current = (int) heap[position];
+		while(position > 0  && getComparator().compare(heap[parent(position)], heap[position]) < 0){
+			Util.swap(getHeap(), parent, current);
+			position = parent(position);
+		}
+	}
+	
+	public void changePriority(int position, T newPosition){
+		if(position < 0 || position >= size()){return;}
+		if(newPosition == null ){ return;}
+		T oldPosition =  heap[position];
+		heap[position] = newPosition;
+		if(getComparator().compare(newPosition, oldPosition) > 0){
+			shiftUp(position);
+		}
+		else{
+			heapify(position);
+		}
+	}
+	
 
 	@Override
 	public void insert(T element) {
@@ -107,12 +131,13 @@ public class HeapImpl<T extends Comparable<T>> implements Heap<T> {
 			heap = Arrays.copyOf(heap, heap.length + INCREASING_FACTOR);
 		}
 		// /////////////////////////////////////////////////////////////////
+		// TODO Implemente a insercao na heap aqui.
 		if(element == null){return;}
 		else{
-			heap[++index] = element; /*Incrementa no array*/
+			this.heap[++index] = element;
 			int i = index;
-			/*Sobe ate achar sua pos*/
-			while( i > 0 && getComparator().compare(heap[i], heap[parent(i)]) > 0){
+			
+			while(i > 0 && getComparator().compare(heap[parent(i)], heap[i]) < 0){
 				Util.swap(getHeap(), i, parent(i));
 				i = parent(i);
 			}
@@ -128,17 +153,21 @@ public class HeapImpl<T extends Comparable<T>> implements Heap<T> {
 			for (int i = this.heap.length - 1; i >= 0; i--) {
 				heapify(i);
 			}
-		}
+		}	
 	}
-	/*Pega o elemento do topo, troca e vai descendo ate ser removido*/
+	
+
+
 	@Override
 	public T extractRootElement() {
 		T result;
-		if(isEmpty()){ result = null;}
-		result = rootElement();
-		Util.swap(getHeap(),0, this.index);
-		this.index --;
-		heapify(0);
+		if(isEmpty()){result = null;}
+		else{
+			result = rootElement();
+			Util.swap(getHeap(), 0, this.index);
+			this.index --;
+			heapify(0);
+		}
 		return result;
 	}
 
@@ -147,7 +176,7 @@ public class HeapImpl<T extends Comparable<T>> implements Heap<T> {
 		T result;
 		if(isEmpty()){result = null;}
 		else{
-			result = heap[0];
+			result = this.heap[0];
 		}
 		return result;
 	}
@@ -169,9 +198,74 @@ public class HeapImpl<T extends Comparable<T>> implements Heap<T> {
 		}
 		this.comparator = comparator;
 		return sorted;
-		
 	}
+	
+	public T[] merge(T[] arrayA, T[] arrayB){
+		/*Forma 1
+		T[] result; 
+		for (int i = 0; i < arrayA.length; i++) {
+			this.insert(arrayA[i]);
+		}
+		for (int i = 0; i < arrayB.length; i++) {
+			this.insert(arrayB[i]);
+		}
+		heapsort(getHeap());
+		result = heapsort(getHeap());
+		
+		//result = heapsort(result);
+		*/
+		//2 FORMA;
+		int size = arrayA.length + arrayB.length;
+		T[] result = (T[]) new Comparable[size];
+		for (int i = 0; i < arrayA.length; i++) {
+			result[i] = arrayA[i];
+		}
+		int sizeA = arrayA.length;
+		for (int i = 0; i < arrayB.length; i++) {
+			result[sizeA + i] = arrayB[i];
+		}
+		buildHeap(result);
+		heapsort(result);
+		return result;
+	} 
+	/*
+		T[] array;
+		for (int i = 0; i < arrayA.length; i++) {
+			this.insert(arrayA[i]);
+		}
+		for (int i = 0; i < arrayB.length; i++) {
+			this.insert(arrayB[i]);
+		}
+		array = heapsort(getHeap());
+		buildHeap(array);
+		return array;
+		
+		
+	}		/*T[] result; 
+		if((arrayA.length < 0 && arrayA == null) && ( arrayB.length < 0 && arrayB == null)){
+			result = null;
+		}
+		int length = arrayA.length + arrayB.length;
+		result = (T[]) new Comparable[length];
 
+		for (int i = 0; i < arrayA.length; i++) {
+			result[i] = arrayA[i];
+		}
+		int lengthA = arrayA.length;
+		for (int i = 0; i < arrayB.length; i++) {
+			result[lengthA + i] = arrayB[i];
+		}
+		result = heapsort(result);
+		
+		for (int i = (length/2-1); i >= 0; i--) {
+			heapify((int) result[i]);
+		}
+		
+		return result;
+	} 
+	*/
+	
+	
 	@Override
 	public int size() {
 		return this.index + 1;
