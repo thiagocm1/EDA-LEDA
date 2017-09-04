@@ -5,43 +5,46 @@ import adt.linkedList.DoubleLinkedListImpl;
 
 public class StackDoubleLinkedListImpl<T> implements Stack<T> {
 
-	protected DoubleLinkedList<T> top;
-	protected int size;
-
-	public StackDoubleLinkedListImpl(int size) {
+	if(size < 0){ size = 0;}
 		this.size = size;
 		this.top = new DoubleLinkedListImpl<T>();
 	}
 
 	@Override
 	public void push(T element) throws StackOverflowException {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Not implemented!");
-
+		if(isFull()){
+			throw new StackOverflowException();
+		}
+		this.top.insert(element);
 	}
 
 	@Override
 	public T pop() throws StackUnderflowException {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Not implemented!");
+		if(isEmpty()){
+			throw new StackUnderflowException();
+		}
+		T element = this.top();
+		this.top.remove(element);
+		return element;
 	}
 
 	@Override
 	public T top() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Not implemented!");
+		T topElement = null;
+		if(!isEmpty()){
+			 topElement = ((DoubleLinkedListImpl<T>) this.top).getLast().getData();
+		}
+		 return topElement;
 	}
 
 	@Override
 	public boolean isEmpty() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Not implemented!");
+		return this.top.isEmpty();
 	}
 
 	@Override
 	public boolean isFull() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Not implemented!");
+		return this.top.size() == size;
 	}
 
 }
