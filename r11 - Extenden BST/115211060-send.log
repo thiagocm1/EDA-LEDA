@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+<record>
+  <date>2017-07-10T14:08:54.854-0300</date>
+  <logger>THIAGO CUNHA MONTENEGRO</logger>
+  <level>FINE</level>
+  <message>File 115211060-THIAGO CUNHA MONTENEGRO.zip was received. It was sent by THIAGO CUNHA MONTENEGRO from IP 127.0.1.1</message>
+</record>
+</log>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+<record>
+  <date>2017-07-10T15:13:21.585-0300</date>
+  <logger>THIAGO CUNHA MONTENEGRO</logger>
+  <level>FINE</level>
+  <message>File 115211060-THIAGO CUNHA MONTENEGRO.zip was received. It was sent by THIAGO CUNHA MONTENEGRO from IP 127.0.1.1</message>
+</record>
